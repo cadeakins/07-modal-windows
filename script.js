@@ -5,7 +5,7 @@ const movieResults = document.getElementById('movie-results');
 const watchlist = new Set(); // Use a Set to avoid duplicates
 const watchlistContainer = document.getElementById('watchlist');
 
-const apiKey = 'd21e119d'; // Replace with your OMDb API key
+const apiKey = 'your-api-key'; // Replace with your OMDb API key
 
 const modal = document.getElementById('movie-modal');
 const modalContent = document.getElementById('modal-movie-details');
