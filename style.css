@@ -173,6 +173,38 @@ h2 {
   background-color: #45a049;
 }
 
+
+/* Style for the button container */
+.movie-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+/* Style for the Details button */
+.btn-details {
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Style for the Add/Remove buttons */
+.btn-add, .btn-remove {
+  background-color: #2ecc71;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-remove {
+  background-color: #e74c3c;
+}
+
 .modal {
   display: none;
   position: fixed; /* Change to fixed to make the modal static */

@@ -5,10 +5,13 @@ const movieResults = document.getElementById('movie-results');
 const watchlist = new Set(); // Use a Set to avoid duplicates
 const watchlistContainer = document.getElementById('watchlist');
 
-const apiKey = 'your-api-key'; // Replace with your OMDb API key
+const apiKey = '9437f1d7'; // Replace with your OMDb API key
 
 const modal = document.getElementById('movie-modal');
 const modalContent = document.getElementById('modal-movie-details');
+
+// Set a placeholder image URL
+const placeholderImage = 'https://via.placeholder.com/150x220?text=No+Image';
 
 // Function to fetch movies from the OMDb API
 async function fetchMovies(query) {
@@ -70,23 +73,30 @@ async function updateWatchlistDisplay() {
       try {
         const response = await fetch(url);
 
-        // Check if the response is ok (status code 200-299)
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const movie = await response.json();
 
+        // Use placeholder if poster is not available
+        const poster = movie.Poster === 'N/A' ? placeholderImage : movie.Poster;
+
+        // Create a div for the watchlist card
         const watchlistCard = document.createElement('div');
         watchlistCard.classList.add('movie-card');
 
+        // Add movie info and buttons to the card
         watchlistCard.innerHTML = `
-          <img src="${movie.Poster}" alt="${movie.Title}" class="movie-poster">
+          <img src="${poster}" alt="${movie.Title}" class="movie-poster">
           <div class="movie-info">
+            <div class="movie-buttons">
+              <!-- Details button on the left, styled differently -->
+              <button class="btn btn-details">Details</button>
+              <button class="btn btn-remove" onclick='removeFromWatchlist("${movie.imdbID}")'>Remove</button>
+            </div>
             <h3 class="movie-title">${movie.Title}</h3>
             <p class="movie-year">${movie.Year}</p>
-            <button class="btn btn-details">Details</button>
-            <button class="btn btn-remove" onclick='removeFromWatchlist("${movie.imdbID}")'>Remove</button>
           </div>
         `;
 
@@ -118,9 +128,11 @@ const handleAddToWatchlist = (movie) => {
 
 // Function to open the modal with movie details
 async function openModal(movieID) {
+  // Build the API URL for the movie details
   const url = `https://www.omdbapi.com/?i=${movieID}&apikey=${apiKey}`;
 
   try {
+    // Fetch movie details from the API
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -128,8 +140,12 @@ async function openModal(movieID) {
 
     const movie = await response.json();
 
+    // Use placeholder if poster is not available
+    const poster = movie.Poster === 'N/A' ? placeholderImage : movie.Poster;
+
+    // Fill the modal with movie details
     modalContent.innerHTML = `
-      <img src="${movie.Poster}" alt="${movie.Title}" class="movie-poster">
+      <img src="${poster}" alt="${movie.Title}" class="movie-poster">
       <h2>${movie.Title} (${movie.Year})</h2>
       <p><strong>Rating:</strong> ${movie.imdbRating}</p>
       <p><strong>Genre:</strong> ${movie.Genre}</p>
@@ -138,6 +154,7 @@ async function openModal(movieID) {
       <p><strong>Plot:</strong> ${movie.Plot}</p>
     `;
 
+    // Show the modal
     modal.style.display = 'block';
   } catch (error) {
     console.error('Error fetching movie details:', error);
@@ -168,22 +185,29 @@ function displayMovies(movies) {
 
   // Loop through each movie and create a card
   movies.forEach((movie) => {
+    // Use placeholder if poster is not available
+    const poster = movie.Poster === 'N/A' ? placeholderImage : movie.Poster;
+
+    // Create a div for the movie card
     const movieCard = document.createElement('div');
     movieCard.classList.add('movie-card');
 
+    // Add movie info and buttons to the card
     movieCard.innerHTML = `
-      <img src="${movie.Poster}" alt="${movie.Title}" class="movie-poster">
+      <img src="${poster}" alt="${movie.Title}" class="movie-poster">
       <div class="movie-info">
+        <div class="movie-buttons">
+          <!-- Details button on the left, styled differently -->
+          <button class="btn btn-details">Details</button>
+          <button class="btn btn-add">Add to Watchlist</button>
+        </div>
         <h3 class="movie-title">${movie.Title}</h3>
         <p class="movie-year">${movie.Year}</p>
-        <button class="btn btn-details">Details</button>
-        <button class="btn btn-add">Add to Watchlist</button>
       </div>
     `;
 
     // Add event listener to the 'Details' button
     movieCard.querySelector('.btn-details').addEventListener('click', handleDetailsButtonClick(movie.imdbID));
-
     // Add event listener to the 'Add to Watchlist' button
     movieCard.querySelector('.btn-add').addEventListener('click', handleAddToWatchlist(movie));
 
